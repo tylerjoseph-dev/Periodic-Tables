@@ -1,4 +1,8 @@
+html,body{
+  height: 100% !important;
+}
 .side-bar {
   background-color: #393a44;
   min-width: 200px;
+  height: 100% !important;
 }
