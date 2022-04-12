@@ -4,10 +4,12 @@ const service = require("./reservations.service");
 
 async function list(req, res) {
   const { date } = req.query;
-  console.log(date);
   if (date) {
     const list = await service.list(date);
     res.status(200).json({ data: list });
+  }else{
+    const list = await service.list();
+    res.status(200).json({data: list});
   }
 }
 
