@@ -24,7 +24,8 @@ async function read(reservation_id){
 
 async function create(reservation){
     return knex("reservations")
-        .insert(reservation);
+        .insert(reservation)
+        .returning("*").then((createdRecord) => createdRecord[0]);
 }
 
 module.exports = {

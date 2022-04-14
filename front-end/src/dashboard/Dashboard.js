@@ -5,6 +5,10 @@ import ReservationTable from "../reservation/ReservationTable";
 import useQuery from "../utils/useQuery";
 import { next, previous, today } from "../utils/date-time";
 import { useHistory } from "react-router";
+import axios from "axios";
+import TableEntry from "../table/TableEntry";
+import TablesTable from "../table/TablesTable";
+
 /**
  * Defines the dashboard page.
  * @param date
@@ -14,14 +18,20 @@ import { useHistory } from "react-router";
 
 function Dashboard({ date }) {
   const history = useHistory();
+  const URL = process.env.REACT_APP_API_BASE_URL;
+
+
   const query = useQuery();
   const searchDate = query.get("date")
   date = searchDate ? searchDate : date;
+
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
-  useEffect(loadDashboard, [date]);
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
 
+  useEffect(loadDashboard, [date]);
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -30,6 +40,19 @@ function Dashboard({ date }) {
       .catch(error => setReservationsError(error.response.data.error));
     return () => abortController.abort();
   }
+
+  useEffect(() => {
+    
+    setTablesError(null);
+    function listTables(){
+      const abortController = new AbortController();
+      axios.get(URL + "/tables").then((response) => {
+        setTables(response.data.data);
+      }).catch(setTablesError);
+      return () => abortController.abort();
+    }
+    listTables();
+  },[])
 
 
   const handleForward = (event) => {
@@ -53,8 +76,12 @@ function Dashboard({ date }) {
         <button onClick={handleToday}>Today</button>
         <button onClick={handleForward}>NextDate</button>
           <ReservationTable reservations={reservations} />
+          <h2>Tables</h2>
+          <TablesTable tables={tables}/>
         </div>
-        
+        <div>
+          
+        </div>
       </div>
     </main>
   );

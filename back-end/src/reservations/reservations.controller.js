@@ -127,8 +127,8 @@ async function create(req, res, next) {
     reservation_date,
     reservation_time,
   };
-  await service.create(newReservation);
-  res.status(201).json({ data: newReservation });
+  const response = await service.create(newReservation);
+  res.status(201).json({ data: response });
 }
 
 module.exports = {

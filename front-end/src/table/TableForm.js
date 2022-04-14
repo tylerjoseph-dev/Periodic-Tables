@@ -10,7 +10,7 @@ export default function TableForm({ populate }) {
     ? { ...populate }
     : {
         table_name: "",
-        capacity: 1,
+        capacity: null,
       };
 
   const [errors, setErrors] = useState(null);
@@ -58,29 +58,28 @@ export default function TableForm({ populate }) {
             minLength={2}
             required={true}
             onChange={handleChange}
+            value={formData.table_name}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="table_name">Capacity</label>
+          <label htmlFor="table_capacity">Capacity</label>
           <input
-            name="table_capacity"
+            name="capacity"
             type="number"
             className="form-control"
             id="table_capacity"
             aria-describedby="table_capacity"
-            placeholder="1"
-            min={1}
-            max={200}
-            required={true}
+            placeholder="2"
             onChange={handleChange}
+            value={formData.capacity}
           />
         </div>
 
         <button
           type="cancel"
           className="btn btn-danger"
-          onClick={() => history.push("/")}
+          onClick={() => history.goBack()}
         >
           Cancel
         </button>

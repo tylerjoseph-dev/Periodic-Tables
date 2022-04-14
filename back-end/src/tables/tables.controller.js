@@ -62,7 +62,7 @@ function tableNameIsValid(req, res, next) {
 
 function tableCapacityIsValid(req, res, next) {
   const { data: { capacity } = {} } = req.body;
-
+  console.log(capacity);
   if (typeof capacity === "number" && capacity > 0) {
     return next();
   }
