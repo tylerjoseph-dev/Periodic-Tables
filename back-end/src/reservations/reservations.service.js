@@ -15,6 +15,13 @@ async function list(date){
     
 }
 
+async function read(reservation_id){
+    return knex("reservations as r")
+        .select("*")
+        .where({reservation_id})
+        .first();
+}
+
 async function create(reservation){
     return knex("reservations")
         .insert(reservation);
@@ -23,4 +30,5 @@ async function create(reservation){
 module.exports = {
     list,
     create,
+    read,
 }

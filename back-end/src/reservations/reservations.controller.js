@@ -12,6 +12,21 @@ async function list(req, res) {
   }
 }
 
+async function reservationExists(req, res, next){
+  const reservationId = req.params.reservation_id;
+  const found = await service.read(reservationId);
+  console.log(found)
+  if(found.people){
+    res.locals.reservation = found;
+    return next();
+  }
+  next({status: 404, message: `Reservation not found with id:${reservationId}`});
+}
+
+function read(req, res, next){
+  res.status(200).json({data: res.locals.reservation});
+}
+
 function bodyDataHas(propertyName) {
   return function (req, res, next) {
     const { data = {} } = req.body;
@@ -118,6 +133,13 @@ async function create(req, res, next) {
 
 module.exports = {
   list,
+  reservationExists,
+  
+  read: [
+    reservationExists,
+    read
+  ],
+  bodyDataHas,
   create: [
     bodyDataHas("first_name"),
     bodyDataHas("last_name"),

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function ReservationEntry({ reservation }) {
   return (
@@ -8,6 +9,7 @@ export default function ReservationEntry({ reservation }) {
       <td>{reservation.mobile_number}</td>
       <td>{reservation.reservation_time}</td>
       <td>{reservation.people}</td>
+      <td><Link to={`/reservations/${reservation.reservation_id}/seat`}><button>Seat</button></Link></td>
     </tr>
   );
 }
