@@ -21,9 +21,18 @@ async function seatTable(table, reservation_id){
         .update({"assigned_to": reservation_id, "status": "occupied"});
 }
 
+async function unseatTable(table_id){
+    console.log(table_id)
+    return knex("tables as t")
+        .select("*")
+        .where({"table_id": table_id})
+        .update({assigned_to: knex.raw("DEFAULT"), "status": "Free"});
+}
+
 module.exports = {
     list,
     create,
     read,
     seatTable,
+    unseatTable
 }

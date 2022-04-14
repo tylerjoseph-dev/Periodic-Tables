@@ -100,6 +100,14 @@ function tableIsNotOccupied(req, res, next){
   return next({status:400, message:`Table is occupied by another party`});
 }
 
+function tableIsOccupied(req, res, next){
+  if(res.locals.table.status == "occupied"){
+    console.log("entered Occupied")
+    return next();
+  }
+  return next({status:400, message: `Table is not occupied`});
+}
+
 async function seat(req, res, next){
   const table = res.locals.table;
   const reservation = res.locals.reservation;
@@ -107,7 +115,13 @@ async function seat(req, res, next){
   console.log(seated)
   res.status(200).json({data:{seated}});
 }
-
+async function unseat(req, res, next){
+  const {table_id} = req.params;
+  console.log("entered Unseat")
+  const yep = await service.unseatTable(table_id);
+  console.log(yep)
+  res.status(200).json({data: {message: `Seat freed`}});
+}
 module.exports = {
   list,
 
@@ -137,4 +151,9 @@ module.exports = {
     
     asyncErrorBoundary(seat),
   ],
+  unseat: [
+    asyncErrorBoundary(tableExists),
+    asyncErrorBoundary(tableIsOccupied),
+    asyncErrorBoundary(unseat)
+  ]
 };
