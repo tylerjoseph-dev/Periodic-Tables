@@ -14,6 +14,7 @@ export default function ReservationTable({ reservations }) {
             <th scope="col">Mobile</th>
             <th scope="col">Time</th>
             <th scope="col">Guests</th>
+            <th scope="col">Status</th>
             <th scope="col">Manage</th>
           </tr>
         </thead>

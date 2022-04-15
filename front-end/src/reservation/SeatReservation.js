@@ -35,6 +35,10 @@ export default function SeatReservation() {
     event.preventDefault();
     try{
         await axios.put(`${URL}/tables/${selectedTable}/seat`, {data: {reservation_id:Number(reservation_id)}})
+        .then(() => {
+          axios.put(URL + `/reservations/${reservation_id}/status`, {data: {status: "seated"}});
+        })
+        
         history.push("/dashboard")
   
     }catch(error){

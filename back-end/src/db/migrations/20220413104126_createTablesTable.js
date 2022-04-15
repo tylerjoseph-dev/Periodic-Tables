@@ -5,7 +5,7 @@ exports.up = function(knex) {
       table.string("table_name").notNullable();
       table.integer("capacity").notNullable();
       table.string("status").defaultTo("Free").notNullable();
-      table.integer("assigned_to").unsigned().references("reservations.reservation_id");
+      table.integer("reservation_id").unsigned().references("reservations.reservation_id");
       table.timestamps(true, true);
   })
 };

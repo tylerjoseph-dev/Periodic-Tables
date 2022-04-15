@@ -15,8 +15,7 @@ async function list(req, res) {
 async function reservationExists(req, res, next){
   const reservationId = req.params.reservation_id;
   const found = await service.read(reservationId);
-  console.log(found)
-  if(found.people){
+  if(found){
     res.locals.reservation = found;
     return next();
   }
@@ -107,6 +106,34 @@ function peopleIsValid(req, res, next) {
 
   return next({ status: 400, message: `people must be a number!` });
 }
+function statusIsValid(req, res, next){
+  const {data: {status} = {}} = req.body;
+  if(status){
+    if(status != "booked"){
+      return next({status:400, message: `${status} is not a valid status for reserving`});
+    }
+  }
+  // if(Object.keys(reservation).includes("status")){
+  //   if(reservation.status != "booked")
+  // }
+  next();
+}
+
+function statusExists(req, res, next){
+  const validStatuses = ["finished", "booked", "seated"];
+  const reservation = res.locals.reservation;
+
+  if(validStatuses.includes(req.body.data.status)) return next()
+
+  next({status:400, message: `unknown status: ${reservation.status}`});
+}
+
+function statusIsNotFinished(req, res, next){
+  const reservation = res.locals.reservation;
+
+  if(reservation.status == "finished") return next({status:400, message:`A finished reservation cannot be updated`});
+  next();
+}
 
 async function create(req, res, next) {
   const {
@@ -119,6 +146,7 @@ async function create(req, res, next) {
       reservation_time,
     } = {},
   } = req.body;
+
   const newReservation = {
     first_name,
     last_name,
@@ -127,8 +155,14 @@ async function create(req, res, next) {
     reservation_date,
     reservation_time,
   };
-  const response = await service.create(newReservation);
-  res.status(201).json({ data: response });
+
+  const resp = await service.create(newReservation);
+  res.status(201).json({ data: resp });
+}
+
+async function setStatus(req, res, next){
+  const reservation = await service.setStatus(req.body.data.status, req.params.reservation_id);
+  res.status(200).json({data: reservation})
 }
 
 module.exports = {
@@ -152,6 +186,14 @@ module.exports = {
     asyncErrorBoundary(dateIsFuture),
     asyncErrorBoundary(dateisWorkingDay),
     asyncErrorBoundary(timeIsDuringWorkingHours),
+    statusIsValid,
     asyncErrorBoundary(create),
   ],
+  setStatus: [
+    bodyDataHas("status"),
+    asyncErrorBoundary(reservationExists),
+    statusExists,
+    statusIsNotFinished,
+    asyncErrorBoundary(setStatus)
+  ]
 };

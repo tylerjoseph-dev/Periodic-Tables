@@ -9,17 +9,14 @@ export default function ReservationEntry({ reservation }) {
       <td>{reservation.mobile_number}</td>
       <td>{reservation.reservation_time}</td>
       <td>{reservation.people}</td>
-      <td>
+      <td data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
+      {reservation.status == "booked" &&(
+        <td>
         <Link to={`/reservations/${reservation.reservation_id}/seat`}>
           <button className="btn btn-success">Seat</button>
         </Link>
-        <Link to={`/reservations/${reservation.reservation_id}/seat`}>
-          <button className="btn btn-primary">Edit</button>
-        </Link>
-        <Link to={`/reservations/${reservation.reservation_id}/seat`}>
-          <button className="btn btn-danger">Cancel</button>
-        </Link>
       </td>
+      )}
     </tr>
   );
 }

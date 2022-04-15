@@ -5,11 +5,13 @@ async function list(date){
         return knex("reservations as r")
         .select("*")
         .where("reservation_date", "=", date)
+        .whereNot({"status": "finished"})
         .orderBy("reservation_time");
     
     }else{
         return knex("reservations as r")
         .select("*")
+        .whereNot({"status": "finished"})
         .orderBy("reservation_date");
     }
     
@@ -28,8 +30,17 @@ async function create(reservation){
         .returning("*").then((createdRecord) => createdRecord[0]);
 }
 
+async function setStatus(status, reservation_id){
+    return knex("reservations as r")
+        .where({"reservation_id": reservation_id})
+        .update({"status": status})
+        .returning("*").then((createdRecord => createdRecord[0]));
+}
+
+
 module.exports = {
     list,
     create,
     read,
+    setStatus,
 }

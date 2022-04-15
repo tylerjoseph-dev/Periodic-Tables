@@ -24,7 +24,6 @@ function Dashboard({ date }) {
   const query = useQuery();
   const searchDate = query.get("date")
   date = searchDate ? searchDate : date;
-
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
@@ -36,7 +35,10 @@ function Dashboard({ date }) {
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
-      .then(setReservations)
+      .then((reservations) => {
+        console.log("RESERVATIONS",reservations);
+        setReservations(reservations);
+      })
       .catch(error => setReservationsError(error.response.data.error));
     return () => abortController.abort();
   }
@@ -47,6 +49,7 @@ function Dashboard({ date }) {
     function listTables(){
       const abortController = new AbortController();
       axios.get(URL + "/tables").then((response) => {
+        console.log("TABLES",response.data.data)
         setTables(response.data.data);
       }).catch(setTablesError);
       return () => abortController.abort();
@@ -77,6 +80,7 @@ function Dashboard({ date }) {
         <button onClick={handleForward}>NextDate</button>
           <ReservationTable reservations={reservations} />
           <h2>Tables</h2>
+          <ErrorAlert error={tablesError} />
           <TablesTable tables={tables}/>
         </div>
         <div>

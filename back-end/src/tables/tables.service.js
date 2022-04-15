@@ -12,22 +12,43 @@ async function read(tableId){
 }
 async function create(table){
     return knex("tables as t")
-    .insert(table);
+    .insert(table)
+    .returning("*").then((createdRecord) => createdRecord[0]);
 }
+
+// async function seatTable(table, reservation_id){
+//     return knex("tables as t")
+//         .where({"table_id": table})
+//         .update({"reservation_id": reservation_id, "status": "occupied"});
+// }
+
 
 async function seatTable(table, reservation_id){
-    return knex("tables as t")
-        .where({"table_id": table})
-        .update({"assigned_to": reservation_id, "status": "occupied"});
+    return knex("reservations as r")
+        .where({"reservation_id": reservation_id})
+        .update({"status": "seated"})
+        .then(() => {
+            return knex("tables as t")
+            .where({"table_id": table})
+            .update({"status": "occupied", "reservation_id": reservation_id});
+        })
 }
 
-async function unseatTable(table_id){
-    console.log(table_id)
+
+
+
+async function unseatTable(table_id, reservation_id){
     return knex("tables as t")
         .select("*")
         .where({"table_id": table_id})
-        .update({assigned_to: knex.raw("DEFAULT"), "status": "Free"});
+        .update({reservation_id: knex.raw("DEFAULT"), "status": "Free"})
+        .then(() => {
+            return knex("reservations as r")
+            .where({"reservation_id": reservation_id})
+            .update({"status": "finished"})
+        });
 }
+
 
 module.exports = {
     list,
