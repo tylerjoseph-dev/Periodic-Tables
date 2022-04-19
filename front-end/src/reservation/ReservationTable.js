@@ -22,6 +22,7 @@ export default function ReservationTable({ reservations }) {
             {list}
         </tbody>
       </table>
+      {list.length < 1 &&(<h2>No reservations found</h2>)}
     </div>
   );
 }

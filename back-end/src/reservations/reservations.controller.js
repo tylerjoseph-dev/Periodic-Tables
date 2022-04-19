@@ -2,11 +2,17 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const service = require("./reservations.service");
 
 async function list(req, res) {
-  const { date } = req.query;
+  const { date, mobile_number } = req.query;
   if (date) {
     const list = await service.list(date);
     res.status(200).json({ data: list });
-  }else{
+  }
+  else if(mobile_number){
+    console.log(mobile_number);
+    const list = await service.list(null, mobile_number)
+    res.status(200).json({data: list});
+  }
+  else{
     const list = await service.list();
     res.status(200).json({data: list});
   }
@@ -120,7 +126,7 @@ function statusIsValid(req, res, next){
 }
 
 function statusExists(req, res, next){
-  const validStatuses = ["finished", "booked", "seated"];
+  const validStatuses = ["finished", "booked", "seated", "cancelled"];
   const reservation = res.locals.reservation;
 
   if(validStatuses.includes(req.body.data.status)) return next()
@@ -164,6 +170,13 @@ async function setStatus(req, res, next){
   const reservation = await service.setStatus(req.body.data.status, req.params.reservation_id);
   res.status(200).json({data: reservation})
 }
+async function update(req ,res, next){
+  const updatedReservervation = {
+    ...req.body.data
+  }
+  await service.update(updatedReservervation, res.locals.reservation.reservation_id);
+  res.status(200).json({data: updatedReservervation});
+}
 
 module.exports = {
   list,
@@ -195,5 +208,17 @@ module.exports = {
     statusExists,
     statusIsNotFinished,
     asyncErrorBoundary(setStatus)
+  ],
+  update: [
+    asyncErrorBoundary(reservationExists),
+    bodyDataHas("first_name"),
+    bodyDataHas("last_name"),
+    bodyDataHas("mobile_number"),
+    bodyDataHas("reservation_date"),
+    bodyDataHas("reservation_time"),
+    bodyDataHas("people"),
+    peopleIsValid,
+    dateTimeIsValid,
+    asyncErrorBoundary(update),
   ]
 };

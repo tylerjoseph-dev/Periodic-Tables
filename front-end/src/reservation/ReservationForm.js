@@ -84,7 +84,6 @@ export default function ReservationForm({ populate }) {
             type="tel"
             className="form-control"
             id="mobile_number"
-            // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
             required={true}
             onChange={handleChange}
           />
