@@ -4,25 +4,26 @@ import { useHistory } from "react-router";
 import axios from "axios";
 import ErrorAlert from "../layout/ErrorAlert";
 
-export default function ReservationForm({ populate }) {
+export default function ReservationForm({ populate, modifying = false }) {
   const URL = process.env.REACT_APP_API_BASE_URL + "/reservations";
   const history = useHistory();
-  const initialFormState = populate
-    ? { ...populate }
-    : {
-        first_name: "",
-        last_name: "",
-        mobile_number: "",
-        reservation_date: "",
-        reservation_time: "",
-        people: 1,
-      };
+  
+  const initialFormState = {
+    first_name: "",
+    last_name: "",
+    mobile_number: "",
+    reservation_date: "",
+    reservation_time: "",
+    people: 1,
+  };
 
   const [errors, setErrors] = useState(null);
-  const [formData, setFormData] = useState({ ...initialFormState });
 
+  
+  const [formData, setFormData] = useState(populate || initialFormState);
+ 
   const handleChange = ({ target }) => {
-    if (target.name == "people") {
+    if (target.name === "people") {
       setFormData({
         ...formData,
         [target.name]: parseInt(target.value),
@@ -39,8 +40,11 @@ export default function ReservationForm({ populate }) {
     event.preventDefault();
     try{
       setErrors(null)
-      await axios.post(URL, {data: formData});
-      console.log(formData.reservation_date)
+      if(modifying){
+        await axios.put(`${URL}/${populate.reservation_id}`, {data: formData});
+      }else{
+        await axios.post(URL, {data: formData});
+      }
       history.push(`/dashboard?date=${formData.reservation_date}`)
     }catch(e){
       setErrors(e.response.data.error)
@@ -58,11 +62,13 @@ export default function ReservationForm({ populate }) {
             name="first_name"
             type="text"
             className="form-control"
-            id="exampleInputEmail1"
+            id="first_name"
             aria-describedby="emailHelp"
             placeholder="Joe"
             required={true}
             onChange={handleChange}
+            value={formData.first_name}
+            
           />
         </div>
         <div className="form-group">
@@ -75,6 +81,7 @@ export default function ReservationForm({ populate }) {
             placeholder="Shmoe"
             required={true}
             onChange={handleChange}
+            value={formData.last_name}
           />
         </div>
         <div className="form-group">
@@ -84,11 +91,11 @@ export default function ReservationForm({ populate }) {
             type="tel"
             className="form-control"
             id="mobile_number"
-            // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
             required={true}
             onChange={handleChange}
+            value={formData.mobile_number}
           />
-          <small>format: 999-123-4567 </small>
+          <small>format: 9991234567 </small>
         </div>
         <div className="form-group">
           <label htmlFor="reservation_date">Date of Reservation</label>
@@ -96,10 +103,12 @@ export default function ReservationForm({ populate }) {
             name="reservation_date"
             type="date"
             className="form-control"
-            id="exampleInputPassword1"
+            id="reservation_date"
             placeholder="Shmoe"
             required={true}
             onChange={handleChange}
+            value={formData.reservation_date}
+            
           />
         </div>
         <div className="form-group">
@@ -111,6 +120,7 @@ export default function ReservationForm({ populate }) {
             id="reservation_time"
             required={true}
             onChange={handleChange}
+            value={formData.reservation_time}
           />
         </div>
         <div className="form-group">
@@ -125,6 +135,7 @@ export default function ReservationForm({ populate }) {
             max="50"
             required={true}
             onChange={handleChange}
+            value={formData.people}
           />
         </div>
         <button
