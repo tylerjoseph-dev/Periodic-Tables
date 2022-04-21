@@ -6,7 +6,6 @@ import useQuery from "../utils/useQuery";
 import { next, previous, today } from "../utils/date-time";
 import { useHistory } from "react-router";
 import axios from "axios";
-import TableEntry from "../table/TableEntry";
 import TablesTable from "../table/TablesTable";
 
 /**
@@ -36,7 +35,7 @@ function Dashboard({ date }) {
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
       .then((reservations) => {
-        console.log("RESERVATIONS",reservations);
+        
         setReservations(reservations);
       })
       .catch(error => setReservationsError(error.response.data.error));
@@ -49,13 +48,13 @@ function Dashboard({ date }) {
     function listTables(){
       const abortController = new AbortController();
       axios.get(URL + "/tables").then((response) => {
-        console.log("TABLES",response.data.data)
+        
         setTables(response.data.data);
       }).catch(setTablesError);
       return () => abortController.abort();
     }
     listTables();
-  },[])
+  },[URL])
 
 
   const handleForward = (event) => {

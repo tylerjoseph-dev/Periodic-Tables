@@ -11,7 +11,6 @@ export default function TableEntry({ table }) {
     try{
       const confirmed = window.confirm('Is this table ready to seat new guests? This cannot be undone.');
 
-      console.log(confirmed);
       if(confirmed){
         await axios.delete(`${URL}/tables/${table.table_id}/seat`);
         window.location.reload();

@@ -8,7 +8,6 @@ async function list(req, res) {
     res.status(200).json({ data: list });
   }
   else if(mobile_number){
-    console.log(mobile_number);
     const list = await service.list(null, mobile_number)
     res.status(200).json({data: list});
   }
@@ -47,8 +46,10 @@ function bodyDataHas(propertyName) {
 
 function dateTimeIsValid(req, res, next) {
   const { data: { reservation_date, reservation_time } = {} } = req.body;
+  
+  
   const dateFormat = /^\d{4}-\d{1,2}-\d{1,2}$/;
-  const timeFormat = /^([0-2]?[0-9]|1[0-3]):[0-5][0-9]$/;
+  const timeFormat = /\d\d:\d\d/;
 
   if (dateFormat.test(reservation_date) && timeFormat.test(reservation_time)) {
     return next();
@@ -112,6 +113,7 @@ function peopleIsValid(req, res, next) {
 
   return next({ status: 400, message: `people must be a number!` });
 }
+
 function statusIsValid(req, res, next){
   const {data: {status} = {}} = req.body;
   if(status){
@@ -181,12 +183,13 @@ async function update(req ,res, next){
 module.exports = {
   list,
   reservationExists,
-  
+  bodyDataHas,
+
   read: [
     reservationExists,
     read
   ],
-  bodyDataHas,
+  
   create: [
     bodyDataHas("first_name"),
     bodyDataHas("last_name"),
@@ -202,6 +205,7 @@ module.exports = {
     statusIsValid,
     asyncErrorBoundary(create),
   ],
+
   setStatus: [
     bodyDataHas("status"),
     asyncErrorBoundary(reservationExists),
@@ -209,6 +213,7 @@ module.exports = {
     statusIsNotFinished,
     asyncErrorBoundary(setStatus)
   ],
+
   update: [
     asyncErrorBoundary(reservationExists),
     bodyDataHas("first_name"),

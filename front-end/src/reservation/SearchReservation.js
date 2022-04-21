@@ -5,7 +5,6 @@ import ReservationTable from "./ReservationTable";
 
 export default function SearchReservation(){
     const URL = process.env.REACT_APP_API_BASE_URL
-    const history = useHistory();
     const [reservations, setReservations] = useState([])
     const [reservationsErrors, setReservationsErrors] = useState(null);
     const [mobileNumber, setMobileNumber] = useState("");

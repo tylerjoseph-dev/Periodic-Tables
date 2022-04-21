@@ -1,7 +1,7 @@
 import React from "react";
 import TableEntry from "./TableEntry";
 
-export default function TablesTable({ tables, refresh }) {
+export default function TablesTable({ tables }) {
     const list = tables.map((table) => <TableEntry table={table}/>);
     
 

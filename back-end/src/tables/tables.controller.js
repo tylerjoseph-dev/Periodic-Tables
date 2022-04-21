@@ -77,7 +77,7 @@ async function create(req, res, next) {
     status: reservation_id ? "occupied" : "Free"
     
   };
-  console.log(newTable)
+  
   const response = await service.create(newTable)
   res.status(201).json({ data: response });
 }
@@ -127,7 +127,7 @@ async function seat(req, res, next){
 async function unseat(req, res, next){
   const {table_id} = req.params;
    const table = res.locals.table
-   console.log(table)
+   
   const yep = await service.unseatTable(table_id, table.reservation_id);
   res.status(200).json({data: {message: `Seat freed`}});
 }
