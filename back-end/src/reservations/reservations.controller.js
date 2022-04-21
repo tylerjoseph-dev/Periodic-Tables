@@ -63,7 +63,7 @@ function dateTimeIsValid(req, res, next) {
 function dateIsFuture(req, res, next){
   const { data: { reservation_date, reservation_time } = {} } = req.body;
   const now = new Date();
-  const resDate = new Date(`${reservation_date}T${reservation_time}`);
+  const resDate = new Date(`${reservation_date} ${reservation_time}`);
   if (resDate < now) {
 
     return next({
@@ -93,9 +93,7 @@ function dateisWorkingDay(req, res, next){
 function timeIsDuringWorkingHours(req, res, next){
   const { data: { reservation_time} = {} } = req.body;
 
-  const hrMin = reservation_time.replace(":", "");
-
-  if (hrMin > 1030 && hrMin < 2131) {
+  if(reservation_time > "10:30" && reservation_time < "21:20"){
     return next();
   }
 
@@ -224,6 +222,9 @@ module.exports = {
     bodyDataHas("people"),
     peopleIsValid,
     dateTimeIsValid,
+    dateIsFuture,
+    dateisWorkingDay,
+    timeIsDuringWorkingHours,
     asyncErrorBoundary(update),
   ]
 };

@@ -15,7 +15,7 @@ const history = useHistory();
       }
     }
     catch(error){
-
+      // No display required
     }
     
   }
@@ -28,7 +28,7 @@ const history = useHistory();
       <td>{reservation.reservation_time}</td>
       <td>{reservation.people}</td>
       <td data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
-      <td>
+      <td nowrap={"true"}>
       {reservation.status === "booked" &&(
         <>
           <Link to={`/reservations/${reservation.reservation_id}/seat`}>
@@ -38,7 +38,6 @@ const history = useHistory();
             <button className="btn btn-primary">Edit</button>
           </Link>
           <button data-reservation-id-cancel={reservation.reservation_id} className="btn btn-danger" onClick={handleClick}>Cancel</button>
-          
         </>
       )}
       </td>

@@ -25,7 +25,7 @@ export default function SeatReservation() {
       }
     }
     listTables();
-  }, []);
+  }, [URL]);
 
   const handleChange = ({target}) => {
     setSelectedTable(Number(target.value))

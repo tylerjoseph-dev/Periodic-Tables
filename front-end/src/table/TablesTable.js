@@ -2,12 +2,12 @@ import React from "react";
 import TableEntry from "./TableEntry";
 
 export default function TablesTable({ tables }) {
-    const list = tables.map((table) => <TableEntry table={table}/>);
+    const list = tables.map((table) => <TableEntry key={table.table_id} table={table}/>);
     
 
   return (
-    <div>
-      <table className="table">
+    <div className="overscroll">
+      <table className="table content-table">
         <thead>
           <tr>
             <th scope="col">Table Name</th>

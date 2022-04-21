@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import ErrorAlert from '../layout/ErrorAlert';
 import ReservationTable from "./ReservationTable";
 
 export default function SearchReservation(){
@@ -49,6 +49,7 @@ export default function SearchReservation(){
         </button>
       </form>
       <div>
+        <ErrorAlert error={reservationsErrors}/>
           <ReservationTable reservations={reservations}/>
       </div>
         </div>

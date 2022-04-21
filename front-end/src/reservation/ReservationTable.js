@@ -2,11 +2,11 @@ import React from "react";
 import ReservationEntry from "./ReservationEntry";
 
 export default function ReservationTable({ reservations }) {
-    const list = reservations.map((reservation) => <ReservationEntry reservation={reservation}/>);
+    const list = reservations.map((reservation) => <ReservationEntry key={reservation.reservation_id} reservation={reservation}/>);
 
   return (
-    <div>
-      <table className="table">
+    <div className="overscroll">
+      <table className="table table-hover">
         <thead>
           <tr>
             <th scope="col">First</th>

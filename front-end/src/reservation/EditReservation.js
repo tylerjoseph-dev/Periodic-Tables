@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReservationForm from "./ReservationForm";
 import axios from "axios";
-import { useParams, __RouterContext } from "react-router";
+import { useParams} from "react-router";
 import ErrorAlert from "../layout/ErrorAlert";
 import { formatAsDate } from "../utils/date-time";
 
@@ -20,7 +20,7 @@ export default function EditReservation(){
                 });
             })
             .catch(setReservationError);
-    },[])
+    },[URL, reservation_id])
 
     
     return(

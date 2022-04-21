@@ -17,7 +17,7 @@ export default function TableForm({ populate }) {
   const [formData, setFormData] = useState({ ...initialFormState });
 
   const handleChange = ({ target }) => {
-    if (target.name == "capacity") {
+    if (target.name === "capacity") {
       setFormData({
         ...formData,
         [target.name]: parseInt(target.value),
