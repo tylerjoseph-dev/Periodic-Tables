@@ -29,6 +29,7 @@ function Dashboard({ date }) {
   const [tablesError, setTablesError] = useState(null);
 
   useEffect(loadDashboard, [date]);
+  
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -41,27 +42,29 @@ function Dashboard({ date }) {
   }
 
   useEffect(() => {
+    const abortController = new AbortController();
     setTablesError(null);
     function listTables() {
-      const abortController = new AbortController();
+      
       axios
-        .get(URL + "/tables")
+        .get(URL + "/tables", abortController.signal)
         .then((response) => {
           setTables(response.data.data);
         })
         .catch(setTablesError);
+        
+      }
+      listTables();
       return () => abortController.abort();
-    }
-    listTables();
   }, [URL]);
 
-  const handleForward = (event) => {
+  const handleForward = () => {
     history.push(`/dashboard?date=${next(date)}`);
   };
-  const handleBackwards = (event) => {
+  const handleBackwards = () => {
     history.push(`/dashboard?date=${previous(date)}`);
   };
-  const handleToday = (event) => {
+  const handleToday = () => {
     history.push(`/dashboard?date=${today(date)}`);
   };
 
@@ -78,11 +81,9 @@ function Dashboard({ date }) {
           <button className="btn btn-info" onClick={handleForward}>NextDate</button>
           <ReservationTable reservations={reservations} />
           <h2>Tables</h2>
-          <ErrorAlert error={tablesError} />
-          <TablesTable tables={tables} />
+          <ErrorAlert error={tablesError}/>
+          <TablesTable tables={tables}/>
         </div>
-
-        <div></div>
       </div>
     </main>
   );

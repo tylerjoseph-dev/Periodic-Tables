@@ -12,7 +12,8 @@ export default function EditReservation(){
     const [reservationError, setReservationError] = useState(null)
 
     useEffect(() => {
-        axios.get(`${URL}/reservations/${reservation_id}`)
+        const abortController = new AbortController();
+        axios.get(`${URL}/reservations/${reservation_id}`, {signal: abortController.signal})
             .then(({data: {data}}) => {
                 setReservation({
                     ...data,
@@ -20,6 +21,7 @@ export default function EditReservation(){
                 });
             })
             .catch(setReservationError);
+        return () => abortController.abort();
     },[URL, reservation_id])
 
     

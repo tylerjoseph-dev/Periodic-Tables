@@ -17,13 +17,15 @@ export default function SearchReservation(){
         };
 
     const handleSubmit = async (event) => {
+      const abortController = new AbortController();
         try{
             event.preventDefault();
-            const response = await axios.get(URL + `/reservations?mobile_number=${mobileNumber}`);
+            const response = await axios.get(URL + `/reservations?mobile_number=${mobileNumber}`, {signal: abortController.signal});
             setReservations(response.data.data);
         }catch(error){
             setReservationsErrors(null);
         }
+        return () => abortController.abort();
     }
 
 
