@@ -10,7 +10,7 @@ export default function TableForm({ populate }) {
     ? { ...populate }
     : {
         table_name: "",
-        capacity: null,
+        capacity: "",
       };
 
   const [errors, setErrors] = useState(null);
@@ -31,6 +31,7 @@ export default function TableForm({ populate }) {
   };
 
   const handleSubmit = async (event) => {
+    
     event.preventDefault();
     try {
       setErrors(null);

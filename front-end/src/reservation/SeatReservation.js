@@ -14,10 +14,12 @@ export default function SeatReservation() {
 
 
     useEffect(() => {
-    setTablesError(null);
-    async function listTables() {
+      const abortController = new AbortController();
+      setTablesError(null);
+      async function listTables() {
+      
       try{
-        const response = await axios.get(URL + "/tables");
+        const response = await axios.get(URL + "/tables", {signal: abortController.signal});
         setTables(response.data.data)
         setSelectedTable(response.data.data[0].table_id)
       }catch(error){
@@ -25,6 +27,7 @@ export default function SeatReservation() {
       }
     }
     listTables();
+    return () => abortController.abort();
   }, [URL]);
 
   const handleChange = ({target}) => {
@@ -63,7 +66,7 @@ export default function SeatReservation() {
             className="form-select"
             aria-label="Click to expand options"
             onChange={handleChange}
-            value={selectedTable}
+            // value={selectedTable}
           >
             <option disabled={true}>Click to expand</option>
             {options}
